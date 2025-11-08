@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "enhanced-fetch-sandbox": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/enhanced-fetch/dist/index.js"
+      ],
+      "env": {
+        "DOCKER_HOST": "unix:///var/run/docker.sock"
+      }
+    }
+  }
+}

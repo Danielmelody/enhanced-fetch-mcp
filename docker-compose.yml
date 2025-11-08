@@ -1,0 +1,26 @@
+version: '3.8'
+
+# This docker-compose.yml is for development/testing purposes
+# The MCP server itself doesn't need to run in Docker - it manages Docker containers
+# However, you can use this to test the sandbox management in an isolated environment
+
+services:
+  # Example: Pre-pull common images for faster sandbox creation
+  image-cache:
+    image: node:20-alpine
+    container_name: mcp-sandbox-cache
+    command: sleep infinity
+    restart: "no"
+    profiles:
+      - cache
+
+# Note: The Enhanced Fetch MCP Server runs on your host machine
+# and creates/manages sandbox containers on demand.
+#
+# To use this project:
+# 1. Install dependencies: npm install
+# 2. Build: npm run build
+# 3. Configure Claude Desktop to use dist/index.js
+# 4. Restart Claude Desktop
+#
+# The server will automatically create and manage Docker containers as needed.
