@@ -40,8 +40,9 @@ export class Logger {
       ),
       defaultMeta: { service: serviceName },
       transports: [
-        // 控制台输出
+        // 控制台输出 - MUST write to stderr for MCP compatibility
         new winston.transports.Console({
+          stderrLevels: ['debug', 'info', 'warn', 'error'],
           format: winston.format.combine(
             winston.format.colorize(),
             winston.format.printf((info) => {
