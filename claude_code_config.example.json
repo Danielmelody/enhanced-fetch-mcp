@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "enhanced-fetch": {
+      "command": "enhanced-fetch-mcp"
+    }
+  }
+}

@@ -40,6 +40,22 @@ describe('SandboxManager', () => {
     await manager.cleanupSandbox(sandbox.id);
   });
 
+  it('should keep stdout and stderr separate without truncation', async () => {
+    const sandbox = await manager.createSandbox('stdio-test');
+
+    const result = await manager.executeInSandbox(sandbox.id, [
+      'sh',
+      '-c',
+      "echo STDOUT && >&2 echo STDERR",
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toBe('STDOUT');
+    expect(result.stderr).toBe('STDERR');
+
+    await manager.cleanupSandbox(sandbox.id);
+  });
+
   it('should list sandboxes', async () => {
     const sandbox1 = await manager.createSandbox('list-test-1');
     const sandbox2 = await manager.createSandbox('list-test-2');

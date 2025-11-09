@@ -73,7 +73,8 @@ export class SandboxManager extends EventEmitter {
         name: `sandbox-${sandboxId}`,
         Image: defaultConfig.image!,
         Cmd: ['/bin/sh'],
-        Tty: true,
+        // Leave TTY disabled so Docker keeps stdout/stderr multiplexed with an 8-byte header.
+        Tty: false,
         OpenStdin: true,
         HostConfig: {
           Memory: this.parseMemoryLimit(defaultConfig.memoryLimit!),
@@ -138,12 +139,18 @@ export class SandboxManager extends EventEmitter {
 
       return new Promise((resolve, reject) => {
         stream.on('data', (chunk: Buffer) => {
-          const data = chunk.toString();
-          // Docker multiplexes stdout/stderr - first byte indicates stream type
-          if (chunk[0] === 1) {
-            stdout += data.substring(8);
-          } else if (chunk[0] === 2) {
-            stderr += data.substring(8);
+          if (chunk.length < 8) {
+            return;
+          }
+
+          // Docker multiplexes stdout/stderr when TTY is disabled: byte 0 => stream type, next 7 bytes => header
+          const streamType = chunk[0];
+          const data = chunk.subarray(8).toString();
+
+          if (streamType === 1) {
+            stdout += data;
+          } else if (streamType === 2) {
+            stderr += data;
           }
         });
 
@@ -366,7 +373,7 @@ export class SandboxManager extends EventEmitter {
       await this.docker.getImage(image).inspect();
     } catch (error) {
       // Image doesn't exist, pull it
-      console.log(`Pulling image ${image}...`);
+      console.error(`Pulling image ${image}...`);
       await new Promise<void>((resolve, reject) => {
         void this.docker.pull(image, (err: Error | null, stream: NodeJS.ReadableStream) => {
           if (err) {
