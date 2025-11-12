@@ -1,0 +1,210 @@
+# Smithery Configuration for Enhanced Fetch MCP
+name: enhanced-fetch-mcp
+displayName: Enhanced Fetch MCP
+description: |
+  Powerful web scraping, content extraction, and browser automation for Claude Code.
+  Features 19 MCP tools including HTTP fetch, HTML to Markdown conversion, 
+  Playwright browser control, screenshot/PDF generation, and Docker sandboxes.
+  Perfect replacement for Claude Code's built-in WebFetch with enhanced capabilities.
+
+# Version information
+version: 1.0.0
+
+# Author and licensing
+author: Enhanced Fetch MCP Team
+license: MIT
+homepage: https://github.com/Danielmelody/enhanced-fetch-mcp
+repository: https://github.com/Danielmelody/enhanced-fetch-mcp
+documentation: https://github.com/Danielmelody/enhanced-fetch-mcp#readme
+
+# Runtime configuration
+runtime: node
+main: dist/index.js
+bin:
+  enhanced-fetch-mcp: dist/index.js
+
+# Installation and setup
+installCommand: npm install -g enhanced-fetch-mcp
+setupCommand: npm run build
+
+# Entry point command
+command: enhanced-fetch-mcp
+
+# Keywords for discovery
+keywords:
+  - web-scraping
+  - browser-automation
+  - playwright
+  - content-extraction
+  - fetch
+  - markdown
+  - html-parser
+  - screenshot
+  - pdf-generation
+  - docker
+  - sandbox
+  - mcp
+  - model-context-protocol
+  - claude-code
+  - chromium
+  - firefox
+  - webkit
+
+# System requirements
+requirements:
+  node: ">=18.0.0"
+  npm: ">=8.0.0"
+  docker: "optional (required for sandbox features)"
+
+# Environment variables
+environment:
+  NODE_ENV:
+    description: Node environment (production/development)
+    required: false
+    default: production
+  LOG_LEVEL:
+    description: Logging level (debug/info/warn/error)
+    required: false
+    default: info
+
+# Available MCP tools
+tools:
+  - name: fetch_and_extract
+    description: Fetch URL and extract content with one call (most commonly used)
+    category: web-scraping
+
+  - name: fetch_url
+    description: Fetch web pages with HTTP requests
+    category: web-scraping
+
+  - name: extract_content
+    description: Extract structured content from HTML
+    category: web-scraping
+
+  - name: create_browser_context
+    description: Create isolated browser context with Playwright
+    category: browser-automation
+
+  - name: browser_navigate
+    description: Navigate to URL in browser
+    category: browser-automation
+
+  - name: browser_get_content
+    description: Get rendered HTML after JavaScript execution
+    category: browser-automation
+
+  - name: browser_screenshot
+    description: Capture page screenshots
+    category: browser-automation
+
+  - name: browser_pdf
+    description: Generate PDF from web pages
+    category: browser-automation
+
+  - name: browser_execute_js
+    description: Execute JavaScript in browser context
+    category: browser-automation
+
+  - name: list_browser_contexts
+    description: List all browser contexts
+    category: browser-automation
+
+  - name: close_browser_context
+    description: Close browser context
+    category: browser-automation
+
+  - name: create_sandbox
+    description: Create Docker sandbox
+    category: docker-sandbox
+
+  - name: execute_in_sandbox
+    description: Execute commands in sandbox
+    category: docker-sandbox
+
+  - name: list_sandboxes
+    description: List all sandboxes
+    category: docker-sandbox
+
+  - name: get_sandbox
+    description: Get sandbox information
+    category: docker-sandbox
+
+  - name: pause_sandbox
+    description: Pause sandbox
+    category: docker-sandbox
+
+  - name: resume_sandbox
+    description: Resume sandbox
+    category: docker-sandbox
+
+  - name: cleanup_sandbox
+    description: Cleanup sandbox
+    category: docker-sandbox
+
+  - name: get_sandbox_stats
+    description: Get resource usage statistics
+    category: docker-sandbox
+
+# Feature highlights
+features:
+  - HTTP client with custom headers and timeouts
+  - HTML to Markdown conversion
+  - Metadata extraction (Open Graph, Twitter Card)
+  - Browser automation with Playwright (Chromium/Firefox/WebKit)
+  - Full-page and region screenshots (PNG/JPEG)
+  - PDF generation (A4/Letter/Legal formats)
+  - JavaScript execution in browser context
+  - Docker sandbox execution environments
+  - Automatic resource cleanup
+  - 19 MCP tools total
+
+# Categories for better organization
+categories:
+  - web-scraping
+  - browser-automation
+  - content-extraction
+  - docker-sandbox
+
+# Performance metrics (optional but helpful)
+performance:
+  http_request: "200-300ms"
+  content_extraction: "10-50ms"
+  browser_launch: "300-500ms"
+  page_navigation: "1.5-2s"
+  screenshot: "~50ms"
+  javascript_execution: "<10ms"
+
+# Compatibility information
+compatibility:
+  claude_code: true
+  claude_desktop: true
+  platforms:
+    - darwin
+    - linux
+    - win32
+
+# Build and development
+build:
+  command: npm run build
+  output: dist/
+  clean: npm run clean
+
+# Testing
+test:
+  command: npm test
+  coverage: true
+
+# Linting
+lint:
+  command: npm run lint
+  fix_command: npm run lint -- --fix
+
+# Scripts available
+scripts:
+  dev: npm run dev
+  start: npm run start
+  build: npm run build
+  test: npm run test
+  watch: npm run watch
+  lint: npm run lint
+  clean: npm run clean
