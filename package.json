@@ -4,6 +4,7 @@
   "description": "Enhanced Fetch MCP Server - Docker-based sandbox management through Model Context Protocol",
   "type": "module",
   "main": "dist/index.js",
+  "module": "src/index.ts",
   "types": "dist/index.d.ts",
   "bin": {
     "enhanced-fetch-mcp": "dist/index.js"
@@ -70,6 +71,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@smithery/cli": "^1.6.3",
     "@types/dockerode": "^3.3.31",
     "@types/express": "^4.17.21",
     "@types/inquirer": "^9.0.7",

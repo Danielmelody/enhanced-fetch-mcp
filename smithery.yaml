@@ -1,32 +1,9 @@
-# Smithery Configuration
-# Learn more: https://smithery.ai/docs
+# Smithery configuration file
+# Documentation: https://smithery.ai/docs/build/project-config/smithery-yaml
 
-name: enhanced-fetch-mcp
-version: 1.0.0
-description: Powerful web scraping, content extraction, and browser automation. 19 MCP tools including HTTP fetch, HTML to Markdown, Playwright browser control, screenshot/PDF generation, and Docker sandboxes.
+runtime: "typescript"
+target: "remote"
 
-# Repository
-repository: https://github.com/Danielmelody/enhanced-fetch-mcp
-homepage: https://github.com/Danielmelody/enhanced-fetch-mcp#readme
-license: MIT
-author: Enhanced Fetch MCP Team
-
-# Keywords
-keywords:
-  - mcp
-  - model-context-protocol
-  - web-scraping
-  - browser-automation
-  - playwright
-  - content-extraction
-  - fetch
-  - markdown
-  - screenshot
-  - pdf-generation
-  - docker
-  - sandbox
-  - claude-code
-
-# Requirements
-requirements:
-  node: ">=18.0.0"
+env:
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
