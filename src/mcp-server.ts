@@ -1037,15 +1037,24 @@ export class MCPSandboxServer {
               params.pageId
             );
 
-            // Return base64 encoded screenshot
+            const imageType = params.type ?? 'png';
+            const mimeType = imageType === 'jpeg' ? 'image/jpeg' : 'image/png';
+            const base64Data = screenshot.toString('base64');
+
+            // Return screenshot as image context with metadata
             return {
               content: [
                 {
+                  type: 'image',
+                  data: base64Data,
+                  mimeType,
+                },
+                {
                   type: 'text',
                   text: JSON.stringify({
-                    screenshot: screenshot.toString('base64'),
-                    type: params.type || 'png',
+                    type: imageType,
                     size: screenshot.length,
+                    mimeType,
                   }, null, 2),
                 },
               ],
