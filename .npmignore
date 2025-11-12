@@ -1,0 +1,74 @@
+# Source files
+src/
+*.ts
+!*.d.ts
+tsconfig.json
+
+# Tests
+**/__tests__/
+**/*.test.ts
+**/*.spec.ts
+test-*.ts
+vitest.config.ts
+
+# Development files
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation
+docs/
+examples/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.travis.yml
+.circleci/
+
+# Scripts
+scripts/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+coverage/
+.nyc_output/
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# MCP testing and debug
+debug-mcp.js
+test-mcp-server.ts
+test-integration.ts
+
+# Config examples
+claude_code_config.example.json
+claude_desktop_config.example.json
+enhanced-fetch-mcp.json
+
+# Other
+*.md.backup
+.eslintrc.json
+smithery.yaml
+MCP_REGISTRY.md
