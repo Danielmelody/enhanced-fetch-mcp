@@ -6,11 +6,20 @@
 
 import { MCPSandboxServer } from './mcp-server.js';
 import { readFileSync } from 'fs';
-import { dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+export type CreateServerOptions = {
+  config?: unknown;
+};
+
+export default function createServer(_options: CreateServerOptions = {}) {
+  void _options;
+  const server = new MCPSandboxServer();
+  return server.getServer();
+}
 
 // Check for CLI arguments
 const args = process.argv.slice(2);
@@ -59,4 +68,18 @@ async function main() {
   }
 }
 
-void main();
+const isCliEntry = (() => {
+  if (!process.argv[1]) {
+    return false;
+  }
+
+  try {
+    return resolve(process.argv[1]) === __filename;
+  } catch {
+    return false;
+  }
+})();
+
+if (isCliEntry) {
+  void main();
+}

@@ -3,13 +3,13 @@
  */
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
   Tool,
 } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
+import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import { SandboxManager } from './sandbox-manager.js';
 import { FetchClient } from './fetch-client.js';
 import { ContentExtractor } from './content-extractor.js';
@@ -23,6 +23,7 @@ import {
   ScreenshotOptions,
   PDFOptions,
 } from './types.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
 // Tool schemas
 const CreateSandboxSchema = z.object({
@@ -165,6 +166,8 @@ export class MCPSandboxServer {
   private fetchClient: FetchClient;
   private contentExtractor: ContentExtractor;
   private browserManager: BrowserSandboxManager;
+  private initialized = false;
+  private readonly serverConnect: Server['connect'];
 
   constructor() {
     this.sandboxManager = new SandboxManager();
@@ -182,8 +185,46 @@ export class MCPSandboxServer {
         },
       }
     );
+    this.serverConnect = this.server.connect.bind(this.server);
+    this.server.connect = async (transport: Transport) => {
+      await this.connect(transport);
+    };
 
     this.setupHandlers();
+  }
+
+  async initialize(): Promise<void> {
+    if (this.initialized) {
+      return;
+    }
+
+    await this.sandboxManager.initialize();
+    this.browserManager.initialize();
+    this.initialized = true;
+  }
+
+  getServer(): Server {
+    return this.server;
+  }
+
+  async connect(transport: Transport): Promise<void> {
+    await this.initialize();
+    await this.serverConnect(transport);
+  }
+
+  async start(): Promise<void> {
+    process.on('SIGINT', () => {
+      void this.shutdown().then(() => process.exit(0));
+    });
+
+    process.on('SIGTERM', () => {
+      void this.shutdown().then(() => process.exit(0));
+    });
+
+    const transport = new StdioServerTransport();
+    await this.connect(transport);
+
+    console.error('Enhanced Fetch MCP Server running on stdio');
   }
 
   private setupHandlers(): void {
@@ -1157,28 +1198,11 @@ export class MCPSandboxServer {
     });
   }
 
-  async start(): Promise<void> {
-    // Initialize managers
-    await this.sandboxManager.initialize();
-    this.browserManager.initialize();
-
-    // Setup graceful shutdown
-    process.on('SIGINT', () => {
-      void this.shutdown().then(() => process.exit(0));
-    });
-
-    process.on('SIGTERM', () => {
-      void this.shutdown().then(() => process.exit(0));
-    });
-
-    // Connect to stdio transport
-    const transport = new StdioServerTransport();
-    await this.server.connect(transport);
-
-    console.error('Enhanced Fetch MCP Server running on stdio');
-  }
-
   async shutdown(): Promise<void> {
+    if (!this.initialized) {
+      return;
+    }
+
     console.error('Shutting down...');
     await this.sandboxManager.shutdown();
     await this.browserManager.shutdown();
