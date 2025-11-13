@@ -2,6 +2,8 @@
 
 English | [简体中文](./README_ZH.md)
 
+[![smithery badge](https://smithery.ai/badge/@Danielmelody/enhanced-fetch-mcp)](https://smithery.ai/server/@Danielmelody/enhanced-fetch-mcp)
+
 A powerful MCP (Model Context Protocol) server that provides web scraping, content extraction, and browser automation capabilities for Claude Code.
 
 ## ✨ Features
