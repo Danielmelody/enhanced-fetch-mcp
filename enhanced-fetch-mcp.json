@@ -4,6 +4,7 @@
   "vendor": "Enhanced Fetch MCP Team",
   "sourceUrl": "https://github.com/Danielmelody/enhanced-fetch-mcp",
   "homepage": "https://github.com/Danielmelody/enhanced-fetch-mcp#readme",
+  "icon": "🌐",
   "license": "MIT",
   "runtime": "node",
   "command": "enhanced-fetch-mcp",
@@ -31,39 +32,312 @@
   "tools": [
     {
       "name": "fetch_and_extract",
-      "description": "Fetch URL and extract content with one call (most commonly used)"
+      "description": "🌟 Most commonly used: Fetch a URL and automatically extract structured content in a single operation. Combines HTTP fetching with intelligent content parsing, metadata extraction, and optional Markdown conversion. Perfect for web scraping, article extraction, and content analysis. Returns cleaned text, metadata (title, description, author), links, images, and reading time estimation.",
+      "parameters": {
+        "url": {
+          "type": "string",
+          "description": "Target URL to fetch and extract content from. Supports HTTP/HTTPS protocols.",
+          "required": true
+        },
+        "fetchOptions": {
+          "type": "object",
+          "description": "Optional HTTP request configuration including method, headers, timeout, user-agent, body, redirect handling, etc.",
+          "required": false
+        },
+        "extractOptions": {
+          "type": "object",
+          "description": "Optional content extraction settings like metadata inclusion, link/image extraction, Markdown conversion, CSS selectors for filtering.",
+          "required": false
+        }
+      }
     },
     {
       "name": "fetch_url",
-      "description": "Fetch web pages with HTTP requests"
+      "description": "⚡ Fetch content from any URL with full HTTP customization. Supports all standard HTTP methods (GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS), custom headers, request body, timeout configuration, user-agent customization, and redirect handling. Returns response status, headers, body, content type, timings, and redirect chain. Ideal for API calls, web scraping, and HTTP testing.",
+      "parameters": {
+        "url": {
+          "type": "string",
+          "description": "URL to fetch content from",
+          "required": true
+        },
+        "method": {
+          "type": "string",
+          "description": "HTTP method: GET, POST, PUT, DELETE, PATCH, HEAD, or OPTIONS (default: GET)",
+          "required": false
+        },
+        "headers": {
+          "type": "object",
+          "description": "Custom HTTP headers as key-value pairs",
+          "required": false
+        },
+        "timeout": {
+          "type": "number",
+          "description": "Request timeout in milliseconds (default: 30000, range: 1000-300000)",
+          "required": false
+        },
+        "userAgent": {
+          "type": "string",
+          "description": "Custom User-Agent string for the request",
+          "required": false
+        },
+        "body": {
+          "type": "string|object",
+          "description": "Request body as string or JSON object (for POST/PUT/PATCH)",
+          "required": false
+        },
+        "followRedirects": {
+          "type": "boolean",
+          "description": "Whether to follow HTTP redirects (default: true)",
+          "required": false
+        },
+        "maxRedirects": {
+          "type": "number",
+          "description": "Maximum number of redirects to follow (default: 5, max: 20)",
+          "required": false
+        }
+      }
     },
     {
       "name": "extract_content",
-      "description": "Extract structured content from HTML"
+      "description": "📄 Extract and parse structured content from raw HTML. Intelligently identifies main content, extracts metadata (Open Graph, Twitter Card, Schema.org), converts to clean Markdown, extracts all links and images with absolute URLs, removes boilerplate (nav, footer, ads), and calculates reading time. Supports custom CSS selectors for precise content targeting and element removal.",
+      "parameters": {
+        "html": {
+          "type": "string",
+          "description": "Raw HTML content to extract and parse",
+          "required": true
+        },
+        "url": {
+          "type": "string",
+          "description": "Original URL of the page (used for resolving relative URLs and metadata context)",
+          "required": false
+        },
+        "includeMetadata": {
+          "type": "boolean",
+          "description": "Extract metadata including title, description, author, publish date, Open Graph, Twitter Card (default: true)",
+          "required": false
+        },
+        "includeLinks": {
+          "type": "boolean",
+          "description": "Extract all hyperlinks with text and absolute URLs (default: true)",
+          "required": false
+        },
+        "includeImages": {
+          "type": "boolean",
+          "description": "Extract all images with alt text, absolute URLs, and dimensions if available (default: true)",
+          "required": false
+        },
+        "convertToMarkdown": {
+          "type": "boolean",
+          "description": "Convert HTML content to clean, readable Markdown format (default: true)",
+          "required": false
+        },
+        "mainContentSelector": {
+          "type": "string",
+          "description": "CSS selector to target main content area (e.g., 'article', '.post-content', '#main')",
+          "required": false
+        },
+        "removeSelectors": {
+          "type": "array",
+          "description": "Array of CSS selectors for elements to remove (e.g., ['.ads', 'nav', 'footer', '.comments'])",
+          "required": false
+        }
+      }
     },
     {
       "name": "create_browser_context",
-      "description": "Create isolated browser context with Playwright"
+      "description": "🌐 Create an isolated browser automation context using Playwright. Supports Chromium, Firefox, and WebKit engines. Configure viewport size, user-agent, locale, timezone, permissions, geolocation, color scheme, and more. Each context is isolated with its own cookies, cache, and state. Runs in headless mode by default for efficiency but supports headed mode for debugging.",
+      "parameters": {
+        "browserType": {
+          "type": "string",
+          "description": "Browser engine to use: 'chromium' (default, fastest), 'firefox', or 'webkit' (Safari)",
+          "required": false
+        },
+        "headless": {
+          "type": "boolean",
+          "description": "Run in headless mode without GUI (default: true, recommended for servers)",
+          "required": false
+        },
+        "timeout": {
+          "type": "number",
+          "description": "Default timeout for all operations in milliseconds (default: 30000)",
+          "required": false
+        },
+        "viewport": {
+          "type": "object",
+          "description": "Browser viewport size as {width, height} in pixels (default: 1280x720)",
+          "required": false
+        },
+        "userAgent": {
+          "type": "string",
+          "description": "Custom User-Agent string for browser identification",
+          "required": false
+        },
+        "locale": {
+          "type": "string",
+          "description": "Browser locale for language/region (e.g., 'en-US', 'zh-CN', 'ja-JP')",
+          "required": false
+        },
+        "timezone": {
+          "type": "string",
+          "description": "Timezone ID (e.g., 'America/New_York', 'Asia/Tokyo', 'Europe/London')",
+          "required": false
+        },
+        "permissions": {
+          "type": "array",
+          "description": "Array of permissions to grant (e.g., ['geolocation', 'notifications', 'camera'])",
+          "required": false
+        },
+        "geolocation": {
+          "type": "object",
+          "description": "Geolocation coordinates as {latitude, longitude} for location spoofing",
+          "required": false
+        },
+        "colorScheme": {
+          "type": "string",
+          "description": "Color scheme preference: 'light', 'dark', or 'no-preference'",
+          "required": false
+        }
+      }
     },
     {
       "name": "browser_navigate",
-      "description": "Navigate to URL in browser"
+      "description": "🧭 Navigate a browser context to a URL and create/return a new page. Supports advanced wait conditions (load, domcontentloaded, networkidle), custom timeout, and referer header. Returns page ID for subsequent operations. Essential first step for all browser automation tasks.",
+      "parameters": {
+        "contextId": {
+          "type": "string",
+          "description": "Browser context ID from create_browser_context",
+          "required": true
+        },
+        "url": {
+          "type": "string",
+          "description": "URL to navigate to (must include protocol: http:// or https://)",
+          "required": true
+        },
+        "waitUntil": {
+          "type": "string",
+          "description": "Wait condition: 'load' (default, DOMContentLoaded + load events), 'domcontentloaded' (faster, DOM ready), or 'networkidle' (all network activity finished)",
+          "required": false
+        },
+        "timeout": {
+          "type": "number",
+          "description": "Navigation timeout in milliseconds (overrides context default)",
+          "required": false
+        },
+        "referer": {
+          "type": "string",
+          "description": "Custom Referer HTTP header for the navigation",
+          "required": false
+        }
+      }
     },
     {
       "name": "browser_get_content",
-      "description": "Get rendered HTML after JavaScript execution"
+      "description": "📋 Get the fully rendered HTML content of a browser page after JavaScript execution and dynamic content loading. Unlike fetch_url which gets raw HTML, this returns the final DOM state including all client-side rendered content, making it perfect for scraping SPAs, React/Vue/Angular apps, and JavaScript-heavy websites.",
+      "parameters": {
+        "contextId": {
+          "type": "string",
+          "description": "Browser context ID",
+          "required": true
+        },
+        "pageId": {
+          "type": "string",
+          "description": "Specific page ID (optional, uses last navigated page if not provided)",
+          "required": false
+        }
+      }
     },
     {
       "name": "browser_screenshot",
-      "description": "Capture page screenshots"
+      "description": "📸 Capture high-quality screenshots of web pages. Supports full-page scrolling screenshots, specific region clipping, PNG/JPEG formats with quality control. Perfect for visual regression testing, web archiving, thumbnail generation, and documentation. Returns base64-encoded image data with metadata.",
+      "parameters": {
+        "contextId": {
+          "type": "string",
+          "description": "Browser context ID",
+          "required": true
+        },
+        "pageId": {
+          "type": "string",
+          "description": "Specific page ID (optional, uses last navigated page if not provided)",
+          "required": false
+        },
+        "fullPage": {
+          "type": "boolean",
+          "description": "Capture entire scrollable page height (default: false, viewport only)",
+          "required": false
+        },
+        "type": {
+          "type": "string",
+          "description": "Image format: 'png' (default, lossless) or 'jpeg' (smaller size, lossy)",
+          "required": false
+        },
+        "quality": {
+          "type": "number",
+          "description": "JPEG quality from 0-100 (only for jpeg type, higher = better quality, larger size)",
+          "required": false
+        },
+        "clip": {
+          "type": "object",
+          "description": "Specific region to capture as {x, y, width, height} in pixels from top-left corner",
+          "required": false
+        }
+      }
     },
     {
       "name": "browser_pdf",
-      "description": "Generate PDF from web pages"
+      "description": "📑 Generate professional PDF documents from web pages with full styling and formatting. Supports multiple paper formats (A4, Letter, Legal), landscape/portrait orientation, custom margins, background graphics, headers/footers. Ideal for archiving, printing, report generation, and documentation. Returns base64-encoded PDF.",
+      "parameters": {
+        "contextId": {
+          "type": "string",
+          "description": "Browser context ID",
+          "required": true
+        },
+        "pageId": {
+          "type": "string",
+          "description": "Specific page ID (optional, uses last navigated page if not provided)",
+          "required": false
+        },
+        "format": {
+          "type": "string",
+          "description": "Paper format: 'A4' (default, 210x297mm), 'Letter' (8.5x11in), or 'Legal' (8.5x14in)",
+          "required": false
+        },
+        "landscape": {
+          "type": "boolean",
+          "description": "Landscape orientation (default: false for portrait)",
+          "required": false
+        },
+        "printBackground": {
+          "type": "boolean",
+          "description": "Include background colors and images (default: true, recommended)",
+          "required": false
+        },
+        "margin": {
+          "type": "object",
+          "description": "Page margins as {top, right, bottom, left} in CSS units (e.g., '1cm', '0.5in', '10mm')",
+          "required": false
+        }
+      }
     },
     {
       "name": "browser_execute_js",
-      "description": "Execute JavaScript in browser context"
+      "description": "⚙️ Execute arbitrary JavaScript code in the browser page context. Access and manipulate the DOM, interact with page elements, extract dynamic data, trigger events, modify page state, and more. Returns the result of the script execution (must be JSON-serializable). Powerful tool for custom scraping logic, form filling, testing, and automation.",
+      "parameters": {
+        "contextId": {
+          "type": "string",
+          "description": "Browser context ID",
+          "required": true
+        },
+        "script": {
+          "type": "string",
+          "description": "JavaScript code to execute. Can return values (must be JSON-serializable). Has access to document, window, and all page globals.",
+          "required": true
+        },
+        "pageId": {
+          "type": "string",
+          "description": "Specific page ID (optional, uses last navigated page if not provided)",
+          "required": false
+        }
+      }
     }
   ],
   "env": {
@@ -76,6 +350,73 @@
       "description": "Logging level (debug/info/warn/error)",
       "required": false,
       "default": "info"
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "defaultTimeout": {
+        "type": "number",
+        "description": "Default timeout for HTTP requests in milliseconds",
+        "default": 30000,
+        "minimum": 1000,
+        "maximum": 300000
+      },
+      "defaultUserAgent": {
+        "type": "string",
+        "description": "Default User-Agent string for HTTP requests",
+        "default": "Enhanced-Fetch-MCP/1.0"
+      },
+      "browserHeadless": {
+        "type": "boolean",
+        "description": "Run browsers in headless mode by default",
+        "default": true
+      },
+      "browserDefaultType": {
+        "type": "string",
+        "enum": ["chromium", "firefox", "webkit"],
+        "description": "Default browser type for automation",
+        "default": "chromium"
+      },
+      "maxConcurrentBrowsers": {
+        "type": "number",
+        "description": "Maximum number of concurrent browser contexts",
+        "default": 5,
+        "minimum": 1,
+        "maximum": 20
+      },
+      "enableSandbox": {
+        "type": "boolean",
+        "description": "Enable Docker sandbox features",
+        "default": true
+      },
+      "sandboxMemoryLimit": {
+        "type": "string",
+        "description": "Default memory limit for sandboxes",
+        "default": "512m"
+      },
+      "markdownConversion": {
+        "type": "boolean",
+        "description": "Enable HTML to Markdown conversion by default",
+        "default": true
+      },
+      "extractMetadata": {
+        "type": "boolean",
+        "description": "Extract metadata (Open Graph, Twitter Card) by default",
+        "default": true
+      },
+      "followRedirects": {
+        "type": "boolean",
+        "description": "Follow HTTP redirects by default",
+        "default": true
+      },
+      "maxRedirects": {
+        "type": "number",
+        "description": "Maximum number of redirects to follow",
+        "default": 5,
+        "minimum": 0,
+        "maximum": 20
+      }
     }
   },
   "requirements": {

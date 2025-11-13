@@ -6,7 +6,13 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
+  ListPromptsRequestSchema,
+  GetPromptRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
   Tool,
+  Prompt,
+  Resource,
 } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
@@ -182,6 +188,8 @@ export class MCPSandboxServer {
       {
         capabilities: {
           tools: {},
+          prompts: {},
+          resources: {},
         },
       }
     );
@@ -228,6 +236,383 @@ export class MCPSandboxServer {
   }
 
   private setupHandlers(): void {
+    // List available prompts
+    this.server.setRequestHandler(ListPromptsRequestSchema, () => {
+      const prompts: Prompt[] = [
+        {
+          name: 'scrape_web_page',
+          description: 'Scrape and extract content from a web page with customizable options',
+          arguments: [
+            {
+              name: 'url',
+              description: 'URL of the web page to scrape',
+              required: true,
+            },
+            {
+              name: 'includeImages',
+              description: 'Whether to extract images from the page',
+              required: false,
+            },
+            {
+              name: 'includeLinks',
+              description: 'Whether to extract links from the page',
+              required: false,
+            },
+            {
+              name: 'convertToMarkdown',
+              description: 'Convert content to Markdown format',
+              required: false,
+            },
+          ],
+        },
+        {
+          name: 'automate_browser',
+          description: 'Automate browser interactions with a web page',
+          arguments: [
+            {
+              name: 'url',
+              description: 'URL to navigate to',
+              required: true,
+            },
+            {
+              name: 'action',
+              description: 'Action to perform: screenshot, pdf, or execute_js',
+              required: true,
+            },
+            {
+              name: 'browserType',
+              description: 'Browser type: chromium, firefox, or webkit',
+              required: false,
+            },
+          ],
+        },
+      ];
+
+      return { prompts };
+    });
+
+    // Get prompt
+    this.server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+      const { name, arguments: args } = request.params;
+
+      switch (name) {
+        case 'scrape_web_page': {
+          const url = args?.url as string;
+          const includeImages = typeof args?.includeImages === 'boolean' ? args.includeImages : true;
+          const includeLinks = typeof args?.includeLinks === 'boolean' ? args.includeLinks : true;
+          const convertToMarkdown = typeof args?.convertToMarkdown === 'boolean' ? args.convertToMarkdown : true;
+
+          return {
+            messages: [
+              {
+                role: 'user',
+                content: {
+                  type: 'text',
+                  text: `Use the fetch_and_extract tool to scrape this web page: ${url}\n\nOptions:\n- Include images: ${includeImages}\n- Include links: ${includeLinks}\n- Convert to Markdown: ${convertToMarkdown}\n\nAfter extraction, summarize the main content and key information found on the page.`,
+                },
+              },
+            ],
+          };
+        }
+
+        case 'automate_browser': {
+          const url = args?.url as string;
+          const action = args?.action as string;
+          const browserType = (args?.browserType as string) ?? 'chromium';
+
+          return {
+            messages: [
+              {
+                role: 'user',
+                content: {
+                  type: 'text',
+                  text: `Automate browser interaction with ${url}:\n\n1. Create a browser context using create_browser_context (browserType: ${browserType})\n2. Navigate to ${url} using browser_navigate\n3. Perform action: ${action}\n   - If screenshot: use browser_screenshot\n   - If pdf: use browser_pdf\n   - If execute_js: use browser_execute_js with the provided script\n4. Close the browser context when done\n\nProvide the results of the automation.`,
+                },
+              },
+            ],
+          };
+        }
+
+        default:
+          throw new Error(`Unknown prompt: ${name}`);
+      }
+    });
+
+    // List available resources
+    this.server.setRequestHandler(ListResourcesRequestSchema, () => {
+      const resources: Resource[] = [
+        {
+          uri: 'resource://documentation/fetch-guide',
+          name: 'Fetch & Extract Guide',
+          description: 'Complete guide for using fetch and content extraction tools',
+          mimeType: 'text/markdown',
+        },
+        {
+          uri: 'resource://documentation/browser-automation',
+          name: 'Browser Automation Guide',
+          description: 'Guide for automating browsers with Playwright',
+          mimeType: 'text/markdown',
+        },
+        {
+          uri: 'resource://examples/scraping-recipes',
+          name: 'Web Scraping Recipes',
+          description: 'Common web scraping patterns and examples',
+          mimeType: 'text/markdown',
+        },
+      ];
+
+      return { resources };
+    });
+
+    // Read resource
+    this.server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+      const { uri } = request.params;
+
+      switch (uri) {
+        case 'resource://documentation/fetch-guide':
+          return {
+            contents: [
+              {
+                uri,
+                mimeType: 'text/markdown',
+                text: `# Fetch & Content Extraction Guide
+
+## Basic Usage
+
+### fetch_url
+Fetch content from any URL with customizable HTTP options:
+
+\`\`\`json
+{
+  "url": "https://example.com",
+  "method": "GET",
+  "headers": {
+    "Accept": "text/html"
+  },
+  "timeout": 30000,
+  "followRedirects": true
+}
+\`\`\`
+
+### extract_content
+Extract structured content from HTML:
+
+\`\`\`json
+{
+  "html": "<html>...</html>",
+  "url": "https://example.com",
+  "includeMetadata": true,
+  "includeLinks": true,
+  "includeImages": true,
+  "convertToMarkdown": true
+}
+\`\`\`
+
+### fetch_and_extract (Recommended)
+Combine both operations in one call:
+
+\`\`\`json
+{
+  "url": "https://example.com",
+  "fetchOptions": {
+    "timeout": 30000
+  },
+  "extractOptions": {
+    "convertToMarkdown": true
+  }
+}
+\`\`\`
+
+## Features
+- Automatic HTML to Markdown conversion
+- Metadata extraction (Open Graph, Twitter Card)
+- Link and image extraction with absolute URLs
+- Custom CSS selectors for content filtering
+- Reading time estimation
+`,
+              },
+            ],
+          };
+
+        case 'resource://documentation/browser-automation':
+          return {
+            contents: [
+              {
+                uri,
+                mimeType: 'text/markdown',
+                text: `# Browser Automation Guide
+
+## Overview
+Use Playwright to automate Chromium, Firefox, and WebKit browsers.
+
+## Workflow
+
+### 1. Create Browser Context
+\`\`\`json
+{
+  "browserType": "chromium",
+  "headless": true,
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  }
+}
+\`\`\`
+
+### 2. Navigate to URL
+\`\`\`json
+{
+  "contextId": "ctx_123",
+  "url": "https://example.com",
+  "waitUntil": "networkidle"
+}
+\`\`\`
+
+### 3. Perform Actions
+
+**Screenshot:**
+\`\`\`json
+{
+  "contextId": "ctx_123",
+  "fullPage": true,
+  "type": "png"
+}
+\`\`\`
+
+**Generate PDF:**
+\`\`\`json
+{
+  "contextId": "ctx_123",
+  "format": "A4",
+  "printBackground": true
+}
+\`\`\`
+
+**Execute JavaScript:**
+\`\`\`json
+{
+  "contextId": "ctx_123",
+  "script": "document.querySelector('h1').textContent"
+}
+\`\`\`
+
+### 4. Clean Up
+Always close contexts when done:
+\`\`\`json
+{
+  "contextId": "ctx_123"
+}
+\`\`\`
+`,
+              },
+            ],
+          };
+
+        case 'resource://examples/scraping-recipes':
+          return {
+            contents: [
+              {
+                uri,
+                mimeType: 'text/markdown',
+                text: `# Web Scraping Recipes
+
+## Recipe 1: Extract Article Content
+\`\`\`typescript
+// 1. Fetch and extract in one call
+const result = await fetch_and_extract({
+  url: "https://blog.example.com/article",
+  extractOptions: {
+    mainContentSelector: "article",
+    removeSelectors: [".ads", ".sidebar"],
+    convertToMarkdown: true
+  }
+});
+\`\`\`
+
+## Recipe 2: Screenshot Dynamic Content
+\`\`\`typescript
+// 1. Create browser context
+const { contextId } = await create_browser_context({
+  browserType: "chromium",
+  viewport: { width: 1920, height: 1080 }
+});
+
+// 2. Navigate and wait for content
+await browser_navigate({
+  contextId,
+  url: "https://dashboard.example.com",
+  waitUntil: "networkidle"
+});
+
+// 3. Take screenshot
+const screenshot = await browser_screenshot({
+  contextId,
+  fullPage: true,
+  type: "png"
+});
+
+// 4. Clean up
+await close_browser_context({ contextId });
+\`\`\`
+
+## Recipe 3: Extract Data from Multiple Pages
+\`\`\`typescript
+const urls = [
+  "https://example.com/page1",
+  "https://example.com/page2",
+  "https://example.com/page3"
+];
+
+for (const url of urls) {
+  const content = await fetch_and_extract({
+    url,
+    extractOptions: {
+      includeMetadata: true,
+      convertToMarkdown: true
+    }
+  });
+  
+  // Process content...
+}
+\`\`\`
+
+## Recipe 4: Execute JS and Extract Data
+\`\`\`typescript
+// 1. Create context and navigate
+const { contextId } = await create_browser_context();
+await browser_navigate({
+  contextId,
+  url: "https://app.example.com"
+});
+
+// 2. Execute JavaScript to extract data
+const data = await browser_execute_js({
+  contextId,
+  script: \`
+    const items = [];
+    document.querySelectorAll('.item').forEach(el => {
+      items.push({
+        title: el.querySelector('.title').textContent,
+        price: el.querySelector('.price').textContent
+      });
+    });
+    return items;
+  \`
+});
+
+// 3. Close context
+await close_browser_context({ contextId });
+\`\`\`
+`,
+              },
+            ],
+          };
+
+        default:
+          throw new Error(`Unknown resource: ${uri}`);
+      }
+    });
+
     // List available tools
     this.server.setRequestHandler(ListToolsRequestSchema, () => {
       const tools: Tool[] = [

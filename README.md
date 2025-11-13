@@ -4,100 +4,88 @@ English | [简体中文](./README_ZH.md)
 
 [![smithery badge](https://smithery.ai/badge/@Danielmelody/enhanced-fetch-mcp)](https://smithery.ai/server/@Danielmelody/enhanced-fetch-mcp)
 
-A powerful MCP (Model Context Protocol) server that provides web scraping, content extraction, and browser automation capabilities for Claude Code.
+**An AI-native web interaction layer that elevates Playwright into an intelligent, secure, and efficient service for AI agents.**
 
-## ✨ Features
+| Feature | Claude's Native Fetch | Standard Playwright | Enhanced Fetch MCP |
+| :--- | :--- | :--- | :--- |
+| **Content Extraction** | Basic | Manual Parsing | **Advanced**: Extracts main content, metadata, links, and images into clean Markdown. |
+| **JavaScript Rendering** | ❌ No | ✅ Yes | **✅ Yes**: Full browser rendering for dynamic pages. |
+| **Security** | ✅ Safe | ⚠️ Browser Sandbox | **🔒 Maximum Security**: All operations are isolated in a Docker container. |
+| **Resource Efficiency** | High | Low | **Hybrid Engine**: Intelligently switches between lightweight HTTP and a full browser. |
+| **Screenshots & PDFs** | ❌ No | ✅ Yes | **✅ Yes**: Captures screenshots and generates PDFs. |
+| **Control & Customization** | Limited | High | **Full Control**: Customizable headers, timeouts, and more. |
 
-- 🌐 **HTTP Web Fetching** - Full-featured HTTP client with custom headers, timeouts, and proxy support
-- 📄 **Smart Content Extraction** - HTML to Markdown conversion with automatic metadata, link, and image extraction
-- 🎭 **Browser Automation** - Playwright-based browser control (Chromium/Firefox/WebKit)
-- 📸 **Screenshot & PDF** - Full-page screenshots, region capture, PDF generation
-- 🐳 **Docker Sandbox** - Isolated container execution environments
-- 🔧 **19 MCP Tools** - Covering all common web operation scenarios
+---
 
-## 🚀 Quick Start
+## Quick Start
 
-### Installation
+### Option 1: Local Installation
 
-#### Method 1: Using mcp-get (Recommended)
-
-```bash
-# Install mcp-get if you haven't
-npm install -g @michaellatman/mcp-get
-
-# Install enhanced-fetch-mcp (automatically configures Claude Code)
-mcp-get install enhanced-fetch-mcp
-```
-
-#### Method 2: Direct npm install
-
+**1. Install:**
 ```bash
 npm install -g enhanced-fetch-mcp
 ```
 
-### Configure Claude Code
-
-Edit `~/.config/claude/config.json`:
-
+**2. Configure Claude Code (`~/.config/claude/config.json`):**
 ```json
 {
-  "mcpServers": {
-    "enhanced-fetch": {
-      "command": "enhanced-fetch-mcp"
-    }
-  }
+  "mcpServers": { "enhanced-fetch": { "command": "enhanced-fetch-mcp" } }
 }
 ```
 
-### Start Using
+**3. Use:**
+> "Fetch the main content of `https://example.com` and take a screenshot."
 
-Restart Claude Code, then simply chat:
+### Option 2: Install via Smithery
 
-```
-Help me fetch the content from https://example.com
-```
+Alternatively, you can use Smithery to simplify the installation and configuration process.
 
-That's it!
+**Install via Smithery:**
+[https://smithery.ai/server/@Danielmelody/enhanced-fetch-mcp](https://smithery.ai/server/@Danielmelody/enhanced-fetch-mcp)
 
-## 📦 Available Tools
+Smithery automates the installation, dependency management, and MCP configuration for you. **Important:** The server runs entirely on your local machine—no data is sent to external servers. You maintain full control over your browsing activities, screenshots, and extracted content, ensuring maximum privacy and security.
 
-### Web Scraping Tools (3)
+---
 
-| Tool | Description |
-|------|-------------|
-| `fetch_url` | Send HTTP requests to fetch web pages |
-| `extract_content` | Extract structured content from HTML |
-| `fetch_and_extract` ⭐ | One-click fetch and extract (recommended) |
+## Tools
 
-### Browser Automation Tools (8)
+#### Web Scraping Tools (3)
 
 | Tool | Description |
 |------|-------------|
-| `create_browser_context` | Create browser context |
-| `browser_navigate` | Navigate to URL |
-| `browser_get_content` | Get rendered HTML |
-| `browser_screenshot` | Capture page screenshot |
-| `browser_pdf` | Generate PDF |
-| `browser_execute_js` | Execute JavaScript |
-| `list_browser_contexts` | List all browser contexts |
-| `close_browser_context` | Close browser context |
+| `fetch_url` | Makes a direct HTTP request to a URL to retrieve its raw HTML content. It supports various methods (GET, POST, etc.), custom headers, and other advanced options. |
+| `extract_content` | Parses raw HTML to pull out structured information. It identifies the main article, cleans it, and returns it in multiple formats (text, Markdown, and HTML), along with metadata, links, and images. |
+| `fetch_and_extract` | A convenient, all-in-one tool that first fetches a URL and then automatically extracts its content. It intelligently decides whether to use a simple HTTP request or a full browser. |
 
-### Docker Sandbox Tools (8)
+#### Browser Automation Tools (8)
 
 | Tool | Description |
 |------|-------------|
-| `create_sandbox` | Create Docker sandbox |
-| `execute_in_sandbox` | Execute commands in sandbox |
-| `list_sandboxes` | List all sandboxes |
-| `get_sandbox` | Get sandbox information |
-| `pause_sandbox` | Pause sandbox |
-| `resume_sandbox` | Resume sandbox |
-| `cleanup_sandbox` | Cleanup sandbox |
-| `get_sandbox_stats` | Get resource usage statistics |
+| `create_browser_context` | Initializes and launches a new, isolated browser instance (like Chrome, Firefox, or WebKit) with a clean session, returning a unique ID for future operations. |
+| `browser_navigate` | Instructs a specific browser instance to visit a URL and waits for the page to load, including executing any initial JavaScript. |
+| `browser_get_content` | Retrieves the full HTML of a page after it has been rendered by the browser, ensuring all dynamic content is present. |
+| `browser_screenshot` | Captures a visual snapshot of the current page in the browser, which can be a full-page or a specific region, and returns the image data. |
+| `browser_pdf` | Generates a PDF document from the current page's content, allowing for a printable, offline version of the web page. |
+| `browser_execute_js` | Runs a custom JavaScript snippet within the context of the current page, enabling interaction with page elements or data retrieval. |
+| `list_browser_contexts` | Returns a list of all currently active browser instances that have been created, along with their IDs and status. |
+| `close_browser_context` | Terminates a browser instance and cleans up all associated resources, including closing all its pages and freeing up memory. |
 
-## 💡 Usage Examples
+#### Docker Sandbox Tools (8)
 
-### Simple Web Scraping
+| Tool | Description |
+|------|-------------|
+| `create_sandbox` | Provisions a new, secure Docker container with a specified image, providing an isolated environment for command execution. |
+| `execute_in_sandbox` | Runs a shell command inside a designated Docker sandbox and returns its standard output, error, and exit code. |
+| `list_sandboxes` | Provides a list of all currently running Docker sandboxes, including their IDs, names, and current status. |
+| `get_sandbox` | Retrieves detailed information about a specific sandbox, such as its configuration, running state, and network settings. |
+| `pause_sandbox` | Temporarily freezes a running sandbox, preserving its state while consuming minimal CPU resources. |
+| `resume_sandbox` | Unpauses a previously paused sandbox, allowing it to continue execution from where it left off. |
+| `cleanup_sandbox` | Stops and completely removes a sandbox container, deleting its file system and freeing up all associated system resources. |
+| `get_sandbox_stats` | Fetches real-time resource usage metrics for a sandbox, including CPU, memory, and network I/O. |
+
+### Usage Examples
+
+#### Simple Web Scraping
 
 ```
 User: Fetch content from https://example.com
@@ -109,7 +97,7 @@ Claude automatically calls fetch_and_extract:
 → Return structured content
 ```
 
-### JavaScript-Rendered Pages
+#### JavaScript-Rendered Pages
 
 ```
 User: This page requires browser rendering
@@ -121,7 +109,7 @@ Claude automatically uses browser tools:
 → Get fully rendered content
 ```
 
-### Web Screenshots
+#### Web Screenshots
 
 ```
 User: Take a screenshot of this page
@@ -133,68 +121,19 @@ Claude automatically calls browser screenshot:
 → Return PNG image
 ```
 
-## 🔧 Feature Details
+### System Requirements
 
-### HTTP Client Features
-
-- ✅ Support all HTTP methods (GET, POST, PUT, DELETE, etc.)
-- ✅ Custom headers, User-Agent, Cookie
-- ✅ Timeout control (default 30s)
-- ✅ Automatic redirect handling (max 5)
-- ✅ Proxy support
-- ✅ Request/response events
-
-### Content Extraction Features
-
-- ✅ High-quality HTML → Markdown conversion
-- ✅ Smart main content identification
-- ✅ Automatic ad and navigation removal
-- ✅ Extract Open Graph, Twitter Card metadata
-- ✅ Extract all links (deduplicated)
-- ✅ Extract all images (with attributes)
-- ✅ Calculate word count, reading time
-
-### Browser Automation Features
-
-- ✅ Support Chromium, Firefox, WebKit
-- ✅ Headless/headed modes
-- ✅ Custom viewport, User-Agent
-- ✅ Network idle waiting
-- ✅ JavaScript execution
-- ✅ Screenshots (PNG/JPEG, full-page/region)
-- ✅ PDF generation (A4/Letter/Legal)
-- ✅ Multi-page management
-- ✅ Automatic resource cleanup
-
-## 🆚 Comparison with Claude Code Built-in WebFetch
-
-| Feature | Built-in WebFetch | Enhanced Fetch MCP |
-|---------|------------------|-------------------|
-| Basic HTTP Requests | ✅ | ✅ |
-| Content Extraction | ✅ Basic | ✅ Enhanced (metadata, links, images) |
-| Markdown Conversion | ✅ | ✅ |
-| JavaScript Rendering | ❌ | ✅ Playwright |
-| Browser Control | ❌ | ✅ Full control |
-| Screenshot/PDF | ❌ | ✅ |
-| Custom Headers | Limited | ✅ Full customization |
-| Redirect Control | Limited | ✅ Full control |
-| Proxy Support | ❌ | ✅ |
-
-**Conclusion**: Enhanced Fetch MCP is a powerful replacement for the built-in WebFetch!
-
-## 📋 System Requirements
-
-### Required
+#### Required
 
 - Node.js >= 18.0.0
 - npm >= 8.0.0
 
-### Optional (for specific features)
+#### Optional (for specific features)
 
 - Docker (for sandbox functionality)
 - Sufficient disk space (Playwright browsers ~300MB)
 
-## 🔍 Verify Installation
+### Verify Installation
 
 ```bash
 # Check if command is available
@@ -209,9 +148,9 @@ enhanced-fetch-mcp
 # Output: Enhanced Fetch MCP Server running on stdio
 ```
 
-## 🐛 Troubleshooting
+### Troubleshooting
 
-### Command Not Found
+#### Command Not Found
 
 ```bash
 # Check installation
@@ -224,7 +163,7 @@ npm install -g enhanced-fetch-mcp
 which enhanced-fetch-mcp
 ```
 
-### Docker Not Running (affects sandbox functionality)
+#### Docker Not Running (affects sandbox functionality)
 
 ```bash
 # macOS
@@ -237,7 +176,7 @@ sudo systemctl start docker
 docker ps
 ```
 
-### View Logs
+#### View Logs
 
 ```bash
 # Server logs
@@ -247,15 +186,15 @@ tail -f ~/.local/share/enhanced-fetch-mcp/logs/browser-mcp.log
 tail -f ~/.local/share/enhanced-fetch-mcp/logs/browser-mcp-error.log
 ```
 
-## 🔄 Update
+### Update
 
 ```bash
 npm update -g enhanced-fetch-mcp
 ```
 
-## 🛠️ Development
+### Development
 
-### Install from Source
+#### Install from Source
 
 ```bash
 # Clone project
@@ -278,25 +217,7 @@ npm test
 npm run dev
 ```
 
-### Project Structure
-
-```
-enhanced-fetch-mcp/
-├── src/
-│   ├── fetch-client.ts           # HTTP client
-│   ├── content-extractor.ts      # Content extractor
-│   ├── browser-sandbox-manager.ts # Browser manager
-│   ├── mcp-server.ts             # MCP server
-│   ├── sandbox-manager.ts        # Docker sandbox manager
-│   ├── types.ts                  # Type definitions
-│   ├── logger.ts                 # Logging system
-│   └── index.ts                  # Entry point
-├── dist/                          # Compiled output
-├── logs/                          # Log directory
-└── README.md                      # This file
-```
-
-## 📊 Performance Metrics
+### Performance Metrics
 
 | Operation | Average Time |
 |-----------|--------------|
@@ -307,26 +228,18 @@ enhanced-fetch-mcp/
 | Screenshot | ~50ms |
 | JavaScript Execution | <10ms |
 
-## 🤝 Contributing
+### Contributing
 
 Contributions are welcome! Please submit a Pull Request or create an Issue.
 
-## 📄 License
+### License
 
 MIT License
 
-## 🙏 Acknowledgments
+### Acknowledgments
 
 - [@modelcontextprotocol/sdk](https://github.com/modelcontextprotocol/sdk) - MCP protocol implementation
 - [Playwright](https://playwright.dev/) - Browser automation
 - [Cheerio](https://cheerio.js.org/) - HTML parsing
 - [Turndown](https://github.com/mixmark-io/turndown) - HTML to Markdown conversion
 - [Dockerode](https://github.com/apocas/dockerode) - Docker API
-
----
-
-**Start using it now!** 🚀
-
-```bash
-npm install -g enhanced-fetch-mcp
-```
