@@ -2,7 +2,8 @@
 # Documentation: https://smithery.ai/docs/build/project-config/smithery-yaml
 
 runtime: "typescript"
-target: "remote"
+# This MCP server runs over stdio, so Smithery should treat it as a local target
+target: "local"
 
 env:
   NODE_ENV: "production"
